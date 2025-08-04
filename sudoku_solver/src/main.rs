@@ -1,7 +1,7 @@
 
 
 use std::io::{self, BufRead};
-use sudoku_solver::{parse_grid, is_valid_grid, pretty_print_grid, solve};
+use sudoku_solver::{parse_grid, is_valid_grid, pretty_print_grid, solve, is_contradictory};
 
 
 
@@ -39,7 +39,6 @@ fn main() {
         eprintln!("Error: Initial grid violates Sudoku rules.");
         return;
     }
-    println!("\nParsed grid:");
     let mut grid = match parse_grid(&lines) {
         Ok(g) => g,
         Err(e) => {
@@ -53,6 +52,10 @@ fn main() {
     }
     println!("\nParsed grid:");
     pretty_print_grid(&grid);
+    if is_contradictory(&grid) {
+        println!("\nNo solution exists for the given puzzle.");
+        return;
+    }
     println!("\nSolving...");
     if solve(&mut grid) {
         println!("\nSolution:");

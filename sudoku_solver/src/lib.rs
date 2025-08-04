@@ -1,3 +1,76 @@
+/// Returns true if the grid is unsolvable by constraint propagation (no possible candidate for a cell, or a number cannot be placed in a row/col/box)
+pub fn is_contradictory(grid: &[[Option<u8>; 9]; 9]) -> bool {
+    // For each cell, check if there is at least one candidate
+    for i in 0..9 {
+        for j in 0..9 {
+            if grid[i][j].is_none() {
+                let mut has_candidate = false;
+                for num in 1..=9 {
+                    if can_place(grid, i, j, num) {
+                        has_candidate = true;
+                        break;
+                    }
+                }
+                if !has_candidate {
+                    println!("Contradiction: cell ({},{}) has no possible candidates.", i+1, j+1);
+                    return true;
+                }
+            }
+        }
+    }
+    // For each number, check if it can be placed somewhere in each row, col, and box
+    for num in 1..=9 {
+        for i in 0..9 {
+            // Row: check all empty cells in the row
+            let mut can_place_somewhere = false;
+            for j in 0..9 {
+                if grid[i][j].is_none() && can_place(grid, i, j, num) {
+                    can_place_somewhere = true;
+                    break;
+                }
+            }
+            if !can_place_somewhere && !grid[i].contains(&Some(num)) {
+                println!("Contradiction: number {} cannot be placed anywhere in row {}.", num, i+1);
+                return true;
+            }
+            // Col: check all empty cells in the column
+            let mut can_place_somewhere = false;
+            for j in 0..9 {
+                if grid[j][i].is_none() && can_place(grid, j, i, num) {
+                    can_place_somewhere = true;
+                    break;
+                }
+            }
+            if !can_place_somewhere && !(0..9).any(|j| grid[j][i] == Some(num)) {
+                println!("Contradiction: number {} cannot be placed anywhere in column {}.", num, i+1);
+                return true;
+            }
+        }
+        // Box: check all empty cells in the box
+        for box_row in 0..3 {
+            for box_col in 0..3 {
+                let mut found = false;
+                for i in 0..3 {
+                    for j in 0..3 {
+                        let r = box_row * 3 + i;
+                        let c = box_col * 3 + j;
+                        if grid[r][c].is_none() && can_place(grid, r, c, num) {
+                            found = true;
+                        }
+                        if grid[r][c] == Some(num) {
+                            found = true;
+                        }
+                    }
+                }
+                if !found {
+                    println!("Contradiction: number {} cannot be placed anywhere in box ({},{}).", num, box_row+1, box_col+1);
+                    return true;
+                }
+            }
+        }
+    }
+    false
+}
 /// Solve the Sudoku puzzle in-place using backtracking. Returns true if solved, false if unsolvable.
 pub fn solve(grid: &mut [[Option<u8>; 9]; 9]) -> bool {
     if let Some((row, col)) = find_empty(grid) {

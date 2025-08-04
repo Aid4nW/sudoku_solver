@@ -1,3 +1,67 @@
+    #[test]
+    fn test_cli_invalid_length() {
+        let input = "53007000\n600195000\n098000060\n800060003\n400803001\n700020006\n060000280\n000419005\n000080079\n";
+        let output = Command::new(env!("CARGO_BIN_EXE_sudoku_solver"))
+            .stdin(Stdio::piped())
+            .stdout(Stdio::piped())
+            .stderr(Stdio::piped())
+            .spawn()
+            .and_then(|mut child| {
+                use std::io::Write;
+                child.stdin.as_mut().unwrap().write_all(input.as_bytes())?;
+                let output = child.wait_with_output()?;
+                Ok(output)
+            })
+            .expect("Failed to run binary");
+        let stdout = String::from_utf8_lossy(&output.stdout);
+        let stderr = String::from_utf8_lossy(&output.stderr);
+        let combined = format!("{}\n{}", stdout, stderr);
+        assert!(combined.contains("must be exactly 9 characters"), "Output missing line length error.\nFull output:\n{}", combined);
+    }
+
+    #[test]
+    fn test_cli_invalid_characters() {
+        let input = "53007A000\n600195000\n098000060\n800060003\n400803001\n700020006\n060000280\n000419005\n000080079\n";
+        let output = Command::new(env!("CARGO_BIN_EXE_sudoku_solver"))
+            .stdin(Stdio::piped())
+            .stdout(Stdio::piped())
+            .stderr(Stdio::piped())
+            .spawn()
+            .and_then(|mut child| {
+                use std::io::Write;
+                child.stdin.as_mut().unwrap().write_all(input.as_bytes())?;
+                let output = child.wait_with_output()?;
+                Ok(output)
+            })
+            .expect("Failed to run binary");
+        let stdout = String::from_utf8_lossy(&output.stdout);
+        let stderr = String::from_utf8_lossy(&output.stderr);
+        let combined = format!("{}\n{}", stdout, stderr);
+        assert!(combined.contains("contains invalid characters"), "Output missing invalid character error.\nFull output:\n{}", combined);
+    }
+
+    #[test]
+    fn test_cli_valid_but_unsolvable() {
+        // This grid is valid (no initial rule violations) but unsolvable (contradiction in solution space)
+        // The contradiction is that the last cell cannot be filled due to constraints
+        let input = "000100000\n000000000\n000000000\n100000000\n000020000\n000000010\n000001000\n000000000\n000000000\n";
+        let output = Command::new(env!("CARGO_BIN_EXE_sudoku_solver"))
+            .stdin(Stdio::piped())
+            .stdout(Stdio::piped())
+            .stderr(Stdio::piped())
+            .spawn()
+            .and_then(|mut child| {
+                use std::io::Write;
+                child.stdin.as_mut().unwrap().write_all(input.as_bytes())?;
+                let output = child.wait_with_output()?;
+                Ok(output)
+            })
+            .expect("Failed to run binary");
+        let stdout = String::from_utf8_lossy(&output.stdout);
+        let stderr = String::from_utf8_lossy(&output.stderr);
+        let combined = format!("{}\n{}", stdout, stderr);
+        assert!(combined.contains("No solution exists for the given puzzle."), "Output missing unsolvable message for valid grid.\nFull output:\n{}", combined);
+    }
 use std::process::{Command, Stdio};
     #[test]
     fn test_cli_solves_puzzle() {
