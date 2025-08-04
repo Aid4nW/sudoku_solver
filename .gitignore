@@ -1,0 +1,40 @@
+# Rust
+target/
+**/*.rs.bk
+Cargo.lock
+
+# VS Code
+.vscode/
+*.code-workspace
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Thumbnails
+._*
+
+# macOS metadata
+.Spotlight-V100
+.Trashes
+
+# Rust/Cargo
+**/Cargo.lock
+
+# Byebug command history
+.byebug_history
+
+# Backup files
+*~
+
+# Logs
+*.log
+
+# Other
+.idea/
+*.swp
+*.swo
+
+# Test binaries
+**/CACHEDIR.TAG
