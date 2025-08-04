@@ -1,9 +1,13 @@
 
+
 use std::io::{self, BufRead};
+use sudoku_solver::{parse_grid, is_valid_grid};
+
+
 
 fn main() {
     let stdin = io::stdin();
-    let mut grid: Vec<String> = Vec::new();
+    let mut lines: Vec<String> = Vec::new();
     println!("Please enter the Sudoku puzzle (9 lines, 9 characters each):");
     for (i, line) in stdin.lock().lines().take(9).enumerate() {
         match line {
@@ -16,7 +20,7 @@ fn main() {
                     eprintln!("Error: Line {} contains invalid characters. Only digits 0-9 or '.' are allowed.", i + 1);
                     return;
                 }
-                grid.push(l);
+                lines.push(l);
             },
             Err(e) => {
                 eprintln!("Error reading input: {}", e);
@@ -24,8 +28,25 @@ fn main() {
             }
         }
     }
-    println!("\nYou entered:");
+    let grid = match parse_grid(&lines) {
+        Ok(g) => g,
+        Err(e) => {
+            eprintln!("Parse error: {}", e);
+            return;
+        }
+    };
+    if !is_valid_grid(&grid) {
+        eprintln!("Error: Initial grid violates Sudoku rules.");
+        return;
+    }
+    println!("\nParsed grid:");
     for row in &grid {
-        println!("{}", row);
+        for cell in row {
+            match cell {
+                Some(n) => print!("{}", n),
+                None => print!("."),
+            }
+        }
+        println!("");
     }
 }
