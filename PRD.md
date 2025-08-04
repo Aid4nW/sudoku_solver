@@ -74,10 +74,31 @@ Each stage is unique, testable, and verifiable.
 
 ---
 
-## Stage 4: Core Solver Implementation
-- Implement backtracking solver
-- Integrate with CLI
-- **Test:** Unit tests for solver with known puzzles (solvable, unsolvable, multiple solutions)
+
+## Stage 4: Core Solver Implementation (Breakdown)
+
+### 4.1: Grid Data Structure & Utilities
+- Define a clear internal representation for the Sudoku grid (already done, but refactor if needed).
+- Implement utility functions:
+  - Find the next empty cell.
+  - Check if a number can be placed at a given position (row, col, box).
+**Test:** Unit tests for utility functions (e.g., can_place, find_empty).
+
+### 4.2: Backtracking Solver Function
+- Implement the recursive backtracking algorithm using the utilities.
+- Return true if solved, false if unsolvable.
+**Test:** Unit tests for the solver with:
+  - Solvable puzzles (should return true and fill the grid).
+  - Unsolvable puzzles (should return false).
+
+### 4.3: CLI Integration
+- Integrate the solver into the CLI.
+- On valid input, attempt to solve and print the solution (or a message if unsolvable).
+**Test:** CLI tests for solving and unsolvable cases.
+
+### 4.4: Multiple Solutions (Optional, for completeness)
+- (Optional) Extend the solver to detect if there are multiple solutions.
+**Test:** Unit test with a puzzle that has more than one solution.
 
 ---
 

@@ -1,3 +1,35 @@
+/// Find the next empty cell in the grid. Returns (row, col) or None if full.
+pub fn find_empty(grid: &[[Option<u8>; 9]; 9]) -> Option<(usize, usize)> {
+    for i in 0..9 {
+        for j in 0..9 {
+            if grid[i][j].is_none() {
+                return Some((i, j));
+            }
+        }
+    }
+    None
+}
+
+/// Check if a number can be placed at (row, col) according to Sudoku rules.
+pub fn can_place(grid: &[[Option<u8>; 9]; 9], row: usize, col: usize, num: u8) -> bool {
+    // Check row and column
+    for i in 0..9 {
+        if grid[row][i] == Some(num) || grid[i][col] == Some(num) {
+            return false;
+        }
+    }
+    // Check 3x3 box
+    let box_row = (row / 3) * 3;
+    let box_col = (col / 3) * 3;
+    for i in 0..3 {
+        for j in 0..3 {
+            if grid[box_row + i][box_col + j] == Some(num) {
+                return false;
+            }
+        }
+    }
+    true
+}
 pub fn pretty_print_grid(grid: &[[Option<u8>; 9]; 9]) {
     for (i, row) in grid.iter().enumerate() {
         if i % 3 == 0 && i != 0 {
