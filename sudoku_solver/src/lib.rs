@@ -1,4 +1,11 @@
-/// Returns true if the grid is unsolvable by constraint propagation (no possible candidate for a cell, or a number cannot be placed in a row/col/box)
+/// Returns true if the grid is unsolvable by constraint propagation (no possible candidate for a cell, or a number cannot be placed in a row/col/box).
+/// Prints debug information if a contradiction is found.
+///
+/// # Arguments
+/// * `grid` - 9x9 Sudoku grid as Option<u8> (None for empty)
+///
+/// # Returns
+/// * `true` if a contradiction is found, `false` otherwise
 pub fn is_contradictory(grid: &[[Option<u8>; 9]; 9]) -> bool {
     // For each cell, check if there is at least one candidate
     for i in 0..9 {
@@ -12,7 +19,6 @@ pub fn is_contradictory(grid: &[[Option<u8>; 9]; 9]) -> bool {
                     }
                 }
                 if !has_candidate {
-                    println!("Contradiction: cell ({},{}) has no possible candidates.", i+1, j+1);
                     return true;
                 }
             }
@@ -30,7 +36,6 @@ pub fn is_contradictory(grid: &[[Option<u8>; 9]; 9]) -> bool {
                 }
             }
             if !can_place_somewhere && !grid[i].contains(&Some(num)) {
-                println!("Contradiction: number {} cannot be placed anywhere in row {}.", num, i+1);
                 return true;
             }
             // Col: check all empty cells in the column
@@ -42,7 +47,6 @@ pub fn is_contradictory(grid: &[[Option<u8>; 9]; 9]) -> bool {
                 }
             }
             if !can_place_somewhere && !(0..9).any(|j| grid[j][i] == Some(num)) {
-                println!("Contradiction: number {} cannot be placed anywhere in column {}.", num, i+1);
                 return true;
             }
         }
@@ -63,7 +67,6 @@ pub fn is_contradictory(grid: &[[Option<u8>; 9]; 9]) -> bool {
                     }
                 }
                 if !found {
-                    println!("Contradiction: number {} cannot be placed anywhere in box ({},{}).", num, box_row+1, box_col+1);
                     return true;
                 }
             }
@@ -71,7 +74,13 @@ pub fn is_contradictory(grid: &[[Option<u8>; 9]; 9]) -> bool {
     }
     false
 }
-/// Solve the Sudoku puzzle in-place using backtracking. Returns true if solved, false if unsolvable.
+/// Solve the Sudoku puzzle in-place using backtracking.
+///
+/// # Arguments
+/// * `grid` - mutable reference to 9x9 Sudoku grid
+///
+/// # Returns
+/// * `true` if solved, `false` if unsolvable
 pub fn solve(grid: &mut [[Option<u8>; 9]; 9]) -> bool {
     if let Some((row, col)) = find_empty(grid) {
         for num in 1..=9 {
@@ -88,7 +97,13 @@ pub fn solve(grid: &mut [[Option<u8>; 9]; 9]) -> bool {
         true // No empty cell left, puzzle solved
     }
 }
-/// Find the next empty cell in the grid. Returns (row, col) or None if full.
+/// Find the next empty cell in the grid.
+///
+/// # Arguments
+/// * `grid` - 9x9 Sudoku grid
+///
+/// # Returns
+/// * `Some((row, col))` if an empty cell is found, `None` if full
 pub fn find_empty(grid: &[[Option<u8>; 9]; 9]) -> Option<(usize, usize)> {
     for i in 0..9 {
         for j in 0..9 {
@@ -101,6 +116,33 @@ pub fn find_empty(grid: &[[Option<u8>; 9]; 9]) -> Option<(usize, usize)> {
 }
 
 /// Check if a number can be placed at (row, col) according to Sudoku rules.
+///
+/// # Arguments
+/// * `grid` - 9x9 Sudoku grid
+/// * `row` - row index (0-8)
+/// * `col` - column index (0-8)
+/// * `num` - number to place (1-9)
+///
+/// # Returns
+/// * `true` if the number can be placed, `false` otherwise
+/// Pretty-print the Sudoku grid to stdout in a human-readable format.
+///
+/// # Arguments
+/// * `grid` - 9x9 Sudoku grid
+/// Parse a vector of 9 strings into a 9x9 Sudoku grid.
+///
+/// # Arguments
+/// * `lines` - slice of 9 strings, each 9 characters long
+///
+/// # Returns
+/// * `Ok(grid)` if parsing succeeds, `Err(msg)` if input is invalid
+/// Validate that a Sudoku grid has no rule violations (rows, columns, boxes).
+///
+/// # Arguments
+/// * `grid` - 9x9 Sudoku grid
+///
+/// # Returns
+/// * `true` if valid, `false` if any rule is violated
 pub fn can_place(grid: &[[Option<u8>; 9]; 9], row: usize, col: usize, num: u8) -> bool {
     // Check row and column
     for i in 0..9 {
