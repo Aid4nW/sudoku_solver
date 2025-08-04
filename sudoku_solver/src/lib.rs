@@ -1,3 +1,20 @@
+pub fn pretty_print_grid(grid: &[[Option<u8>; 9]; 9]) {
+    for (i, row) in grid.iter().enumerate() {
+        if i % 3 == 0 && i != 0 {
+            println!("------+-------+------");
+        }
+        for (j, cell) in row.iter().enumerate() {
+            if j % 3 == 0 && j != 0 {
+                print!("| ");
+            }
+            match cell {
+                Some(n) => print!("{} ", n),
+                None => print!(". "),
+            }
+        }
+        println!("");
+    }
+}
 pub fn parse_grid(lines: &[String]) -> Result<[[Option<u8>; 9]; 9], String> {
     if lines.len() != 9 {
         return Err("Input must have exactly 9 lines.".to_string());

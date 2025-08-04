@@ -40,13 +40,5 @@ fn main() {
         return;
     }
     println!("\nParsed grid:");
-    for row in &grid {
-        for cell in row {
-            match cell {
-                Some(n) => print!("{}", n),
-                None => print!("."),
-            }
-        }
-        println!("");
-    }
+    sudoku_solver::pretty_print_grid(&grid);
 }
