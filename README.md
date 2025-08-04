@@ -1,6 +1,8 @@
 # Sudoku Solver in Rust
 
-A command-line Sudoku solver written in Rust. Efficiently solves standard 9x9 Sudoku puzzles with robust validation, clear output, and comprehensive tests.
+A command-line Sudoku solver written in Rust.
+Efficiently solves standard 9x9 Sudoku puzzles with robust validation, clear output, and comprehensive tests.
+Built using Github Copilot.
 
 ## Features
 - Accepts Sudoku puzzles via standard input (stdin)
