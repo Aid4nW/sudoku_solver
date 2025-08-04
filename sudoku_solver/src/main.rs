@@ -28,17 +28,6 @@ fn main() {
             }
         }
     }
-    let grid = match parse_grid(&lines) {
-        Ok(g) => g,
-        Err(e) => {
-            eprintln!("Parse error: {}", e);
-            return;
-        }
-    };
-    if !is_valid_grid(&grid) {
-        eprintln!("Error: Initial grid violates Sudoku rules.");
-        return;
-    }
     let mut grid = match parse_grid(&lines) {
         Ok(g) => g,
         Err(e) => {
@@ -46,6 +35,7 @@ fn main() {
             return;
         }
     };
+
     if !is_valid_grid(&grid) {
         eprintln!("Error: Initial grid violates Sudoku rules.");
         return;
