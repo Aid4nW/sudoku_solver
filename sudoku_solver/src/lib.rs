@@ -1,3 +1,20 @@
+/// Solve the Sudoku puzzle in-place using backtracking. Returns true if solved, false if unsolvable.
+pub fn solve(grid: &mut [[Option<u8>; 9]; 9]) -> bool {
+    if let Some((row, col)) = find_empty(grid) {
+        for num in 1..=9 {
+            if can_place(grid, row, col, num) {
+                grid[row][col] = Some(num);
+                if solve(grid) {
+                    return true;
+                }
+                grid[row][col] = None;
+            }
+        }
+        false
+    } else {
+        true // No empty cell left, puzzle solved
+    }
+}
 /// Find the next empty cell in the grid. Returns (row, col) or None if full.
 pub fn find_empty(grid: &[[Option<u8>; 9]; 9]) -> Option<(usize, usize)> {
     for i in 0..9 {
